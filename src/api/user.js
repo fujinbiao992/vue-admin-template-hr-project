@@ -12,10 +12,9 @@ export function login(data) {
     data
   })
 }
-
-export function getInfo(token) {
-
-}
-export function logout() {
-
+export function loginInfo() {
+  return request({
+    url: '/sys/profile',
+    method: 'post'
+  })
 }
