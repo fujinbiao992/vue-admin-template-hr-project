@@ -12,9 +12,25 @@ export function login(data) {
     data
   })
 }
-export function loginInfo() {
+/**
+ * @description: 获取用户资料
+ * @param {*}
+ * @return {*}
+ */
+export function getUserInfo() {
   return request({
     url: '/sys/profile',
     method: 'post'
   })
 }
+/**
+ * @description: 获取用户ID信息
+ * @param {*} id {userId}
+ * @return {*}
+ */
+export function getUserDateByID(id) {
+  return request({
+    url: `/sys/user/${id}`
+  })
+}
+

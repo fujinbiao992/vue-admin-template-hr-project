@@ -12,6 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
+        <!-- 遍历routers获取router中所有的配置项 -->
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -31,6 +32,7 @@ export default {
       'sidebar'
     ]),
     routes() {
+      // 循环遍历routers中的所有选项
       return this.$router.options.routes
     },
     activeMenu() {
