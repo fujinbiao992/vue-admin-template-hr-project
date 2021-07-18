@@ -15,13 +15,13 @@ Vue.use(Router)
 import Layout from '@/layout'
 // 1- 动态路由表
 export const asyncRouters = [
-  approvalsRouter,
   departmentsRouter,
+  settingRouter,
   employeesRouter,
   permissionRouter,
+  approvalsRouter,
   attendancesRouter,
   salarysRouter,
-  settingRouter,
   socialRouter
 ]
 // 2- 静态路由表

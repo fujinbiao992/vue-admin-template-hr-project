@@ -36,7 +36,7 @@ error => {
     // 跳回到登录页
     router.push('/login')
   }
-  return Promise.reject(error + `ssss`)
+  return Promise.reject(error)
 }
 )
 

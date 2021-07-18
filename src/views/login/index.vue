@@ -77,6 +77,7 @@ export default {
         this.passwordType = 'password'
       }
       this.$nextTick(() => {
+        // 通过操作DOM元素的方式,设置focus事件
         this.$refs.password.focus()
       })
     },
