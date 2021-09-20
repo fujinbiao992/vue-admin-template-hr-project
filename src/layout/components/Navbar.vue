@@ -8,8 +8,8 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img src="@/assets/common/bigUserHeader.png" class="user-avatar">
-          <span class="name">管理员</span>
+          <img :src="staffPhoto" class="user-avatar">
+          <span class="name">{{ name }}</span>
           <i class="el-icon-caret-bottom" style="color:#fff" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -34,18 +34,20 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
+  name: 'Navbar',
   components: {
-    // Breadcrumb,
     Hamburger
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name',
+      'staffPhoto'
+
     ])
   },
   methods: {
@@ -53,8 +55,24 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      const userData = await this.$store.dispatch('user/asyncDateUserInfo')
-      console.log(userData)
+      // 1.给到用户一个确认提示
+      this.$confirm('是否退出登录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 2. 实现具体的登出逻辑
+        // 清空本地的用户数据 然后跳转到登录页
+        this.$store.commit('user/removeUserInfo')
+        // this.$store.dispatch('user/loginOutRemove')
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '退出登录'
+        })
+      })
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }
@@ -66,7 +84,7 @@ export default {
   font-size: 18px;
   line-height: 50px;
   margin-left: 10px;
-  color: #5a5e66;
+  color: #ffffff;
   cursor: text;
   .breadBtn {
     background: #84a9fe;
@@ -83,7 +101,7 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background-image: -webkit-linear-gradient(left, #3d6df8, #5b8cff);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
@@ -118,7 +136,7 @@ export default {
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
+      vertical-align: middle;
 
       &.hover-effect {
         cursor: pointer;
@@ -137,21 +155,13 @@ export default {
         margin-top: 5px;
         position: relative;
 
-       .user-avatar {
+        .user-avatar {
           cursor: pointer;
-          width: 30px;
-          height: 30px;
-          border-radius: 15px;
-          vertical-align: middle;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
         }
-        .name {
-          color: #5a5e66;
-          vertical-align: middle;
-          margin-left:5px;
-        }
-        .user-dropdown {
-          color: #fff;
-        }
+
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
@@ -162,5 +172,20 @@ export default {
       }
     }
   }
+}
+.user-avatar {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  vertical-align: middle;
+}
+.name {
+  color: #fff;
+  vertical-align: middle;
+  margin-left:5px;
+}
+.user-dropdown {
+   color: #fff;
 }
 </style>

@@ -28,7 +28,7 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">手机号:18810996057</span>
+        <span style="margin-right:20px;">手机号:13800000002</span>
         <span> 密码:123456</span>
       </div>
 
@@ -86,7 +86,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/asyncGetToken', this.loginForm)
+          this.$store.dispatch('user/asyncSetToken', this.loginForm)
           this.$router.push('/')
         } else {
           return false
@@ -103,8 +103,8 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg: #283443;
-$light_gray: #fff;
-$cursor: #fff;
+$light_gray: #000;
+$cursor: #000;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
