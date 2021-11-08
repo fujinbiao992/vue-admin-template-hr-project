@@ -24,6 +24,7 @@ export default {
       // 清空本地cookie
       removeToken()
       state.userInfo = {}
+      // 重置vuex中的路由参数
     }
   },
   actions: {

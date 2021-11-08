@@ -1,11 +1,15 @@
 <template>
   <div class="navbar">
     <div class="app-breadcrumb">
-      江苏传智播客教育科技股份有限公司
+      {{ $t('navbar.title') }}
       <span class="breadBtn">体验版</span>
     </div>
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
     <div class="right-menu">
+      <!-- 语言国际化 -->
+      <lang class="right-menu-item" />
+      <!-- 全屏组件 -->
+      <screen-full class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="staffPhoto" class="user-avatar">

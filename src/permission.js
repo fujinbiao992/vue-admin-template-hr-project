@@ -27,9 +27,9 @@ router.beforeEach(async(to, from, next) => {
       if (!store.getters.userId) {
         const res = await store.dispatch('user/asyncSetUserInfo')
         // console.log('接受action函数返回值：', res)
-        // 1.拿到当前登录用户可访问的菜单标识
+        // ! 1.拿到当前登录用户可访问的菜单标识
         const menus = res.roles.menus
-        // 2.俩份数据都具备了 对所有的动态路由表做过滤处理
+        // ! 2.俩份数据都具备了 对所有的动态路由表做过滤处理
         // 过滤思路：遍历我们所有的动态路由表 通过路由name去做匹配
         // name属性只有能在菜单权限表里面找到 才有资格展示
         let filterRoutes = []

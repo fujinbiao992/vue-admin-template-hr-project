@@ -13,6 +13,7 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import i18n from '@/lang'
 
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
@@ -22,13 +23,12 @@ Vue.config.productionTip = false
 
 // 定义全局按钮方法
 Vue.prototype.$checkBtn = function(key) {
-  // return this.$store.state.user.userInfo.roles.points.includes(key)
-
   return this.$store.state.user.userInfo.roles.points.includes(key)
 }
 new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

@@ -12,8 +12,9 @@ export default {
     },
     {
       path: 'detail',
-      component: () => import('@/views/employees/EmployeeDetail'),
-      name: 'employeesDetail',
+      component: () => import('@/views/employees/detail'),
+      name: 'detail',
+      meta: { title: '员工详情' },
       hidden: true
     }
   ]

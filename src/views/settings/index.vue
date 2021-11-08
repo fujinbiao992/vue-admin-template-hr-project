@@ -26,7 +26,7 @@
               插槽新语法 + 解构
              -->
             <template #default="{ row }">
-              <el-button size="small" type="success" @click="addPermission(row.id)">分配权限</el-button>
+              <el-button size="small" type="success" @click="addClickPermission(row.id)">分配权限</el-button>
               <el-button size="small" type="primary" @click="edit(row.id)">编辑</el-button>
               <el-button size="small" type="danger" @click="hDel(row.id)">删除</el-button>
             </template>
@@ -62,12 +62,22 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <!-- 添加权限点弹窗 -->
+    <add-permission
+      :show-permission-dialog="showPermissionDialog"
+      :cur-id="curId"
+      @close-dialog="closePerssionsDialog"
+    />
   </div>
 </template>
 
 <script>
 import { getRoleList, addRole, updateRole, deleteRole } from '@/api/setting'
+import AddPermission from './components/add-permission'
 export default {
+  components: {
+    AddPermission
+  },
   data() {
     return {
       showDialog: false,
@@ -83,7 +93,9 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }]
-      }
+      },
+      showPermissionDialog: false,
+      curId: null
     }
   },
   mounted() {
@@ -95,6 +107,9 @@ export default {
       const res = await getRoleList(this.params)
       this.roleList = res.rows
       this.total = res.total
+    },
+    closePerssionsDialog() {
+      this.showPermissionDialog = false
     },
     // 分页方法
     pageChange(page) {
@@ -152,6 +167,11 @@ export default {
     edit(id) {
       this.showDialog = true
       this.hGetRoleList(id)
+    },
+    // 分配权限
+    addClickPermission(id) {
+      this.curId = id
+      this.showPermissionDialog = true
     }
   }
 }

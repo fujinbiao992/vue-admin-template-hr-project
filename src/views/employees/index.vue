@@ -7,8 +7,8 @@
           <span>总记录数: 16 条</span>
         </template>
         <template #right>
-          <el-button type="warning" size="small">excel导入</el-button>
-          <el-button type="danger" size="small">excel导出</el-button>
+          <el-button type="warning" size="small" to="/import">excel导入</el-button>
+          <el-button type="danger" size="small" @click="exportExcel">excel导出</el-button>
           <el-button type="primary" size="small" @click="showDialog=true">新增员工</el-button>
         </template>
       </page-tools>
@@ -16,7 +16,14 @@
         <el-table border :data="tabeList" :default-sort="{prop:'workNumber'}">
           <el-table-column label="序号" type="index" />
           <el-table-column label="姓名" prop="username" />
-          <el-table-column label="工号" prop="workName" />
+          <el-table-column label="用户头像">
+            <template slot-scope="scope" class="staff">
+              <!-- 展示用户头像 -->
+              <!-- {{ scope.row.staffPhoto }} -->
+              <ImgPlaceHoder :src="scope.row.staffPhoto" @click.native="clickShowCode(scope.row.staffPhoto)" />
+            </template>
+          </el-table-column>
+          <el-table-column label="工号" prop="workNumber" />
           <el-table-column label="聘用形式">
             <template slot-scope="scope">
               <!--
@@ -39,8 +46,8 @@
           <el-table-column label="账户状态" prop="enableState" />
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template slot-scope="scope">
-              <el-button type="text" size="small">查看</el-button>
-              <el-button type="text" size="small">分配角色</el-button>
+              <el-button type="text" size="small" @click="goDetail(scope.row)">查看</el-button>
+              <el-button type="text" size="small" @click="addRole(scope.row.id)">分配角色</el-button>
               <el-button type="text" size="small" @click="delUser(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
@@ -61,18 +68,38 @@
         </div>
       </el-card>
     </div>
-    <!-- 使用子组件 -->
+    <!-- 新增员工组件 -->
     <add-employee :show-dialog="showDialog" @close-dialog="closeDialog" />
+    <!-- 二维码组件 -->
+    <el-dialog
+      :visible="showCodeDialog"
+      title="二维码"
+      @close="showCodeDialog=false"
+    >
+      <el-row type="flex" justify="conter">
+        <canvas ref="myCanvas" />
+      </el-row>
+    </el-dialog>
+    <!-- 分配权限组件 -->
+    <assing-role
+      :show-role-dialog.sync="showRoleDialog"
+      :cur-user-id="curId"
+      @close-dialog="closeRoleDialog"
+    />
   </div>
 </template>
 <script>
 import { reqGetEmployeeList, delEmployee } from '@/api/employees'
 import Types from '@/api/constant/employees'
-import dayjs from 'dayjs'
+import { transSourceDataToArray } from '@/utils/excelData'
 import AddEmployee from './components/add-employee'
+import AssingRole from './components/assing-role'
+import dayjs from 'dayjs'
+import Qrcode from 'qrcode'
 export default {
   components: {
-    AddEmployee
+    AddEmployee,
+    AssingRole
   },
   data() {
     return {
@@ -82,7 +109,10 @@ export default {
         size: 10
       },
       total: 0,
-      showDialog: false
+      showDialog: false,
+      showCodeDialog: false,
+      showRoleDialog: false,
+      curId: null
     }
   },
   mounted() {
@@ -101,6 +131,36 @@ export default {
     },
     closeDialog() {
       this.showDialog = false
+    },
+    closeRoleDialog() {
+      // 进行父子组件传值的自定义事件函数
+      this.showRoleDialog = false
+    },
+    // 导出excel
+    exportExcel() {
+      // 使用按需导出的方式
+      import('@/vendor/Export2Excel').then(async excel => {
+        // 1- 按照当前页的参数,请求当前页的数据
+        // 2- 对后端返回的数据,进行分页处理,分别添加到表头和表格数据的配置项位置
+        const header = {
+          '手机号': 'mobile',
+          '姓名': 'username',
+          '入职日期': 'timeOfEntry',
+          '聘用形式': 'formOfEmployment',
+          '转正日期': 'correctionTime',
+          '工号': 'workNumber',
+          '部门': 'departmentName'
+        }
+        const res = await reqGetEmployeeList(this.params)
+        const tableData = transSourceDataToArray(res.rows, header)
+        excel.export_json_to_excel({
+          header: Object.keys(header),
+          data: tableData,
+          filename: '员工列表',
+          autoWidth: true,
+          bookType: 'xlsx'
+        })
+      })
     },
     // 聘用格式化
     _formatFormOfEmployment(val) {
@@ -125,7 +185,43 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    // 详情展示
+    goDetail(row) {
+      this.$router.push({
+        path: '/employees/detail',
+        query: {
+          id: row.id
+        }
+      })
+    },
+    // 二维码配置
+    clickShowCode(url) {
+      if (url === null) {
+        return false
+      } else {
+        // 展开对话框
+        this.showCodeDialog = true
+        this.$nextTick(() => {
+          Qrcode.toCanvas(this.$refs.myCanvas, url)
+        })
+      }
+    },
+    // 分配角色
+    addRole(id) {
+      this.showRoleDialog = true
+      this.curId = id
     }
   }
 }
 </script>
+<style scoped lang='scss'>
+.employees-container {
+  .staff {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    border-radius: 50%;
+  }
+}
+</style>

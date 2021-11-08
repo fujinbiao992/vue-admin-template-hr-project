@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 /**
  * @description: 获取角色列表
- * @param {*} params:{page, pageSize}
+ * @param {*} params:{page, pagesize}
  * @return {*}
  */
 export function getRoleList(params) {
@@ -43,5 +43,23 @@ export function deleteRole(id) {
   return request({
     url: `/sys/role/${id}`,
     method: 'delete'
+  })
+}
+// 给角色分配权限 {id:角色id, permIds:[] 所有选中的节点的id组成的数组}
+export function assignPerm(data) {
+  return request({
+    url: '/sys/role/assignPrem',
+    method: 'put',
+    data
+  })
+}
+/**
+ * @description: 获取角色详情
+ * @paran {*} id 角色id
+ * @renturn {*}
+ */
+export function getRoleDetail(id) {
+  return request({
+    url: `/sys/role/${id}`
   })
 }
